@@ -7,4 +7,8 @@ project ("gniconf")
 
 # Include sub-projects.
 add_subdirectory ("gniconf")
+add_subdirectory ("pugixml")
+
+ 
+enable_testing()
 

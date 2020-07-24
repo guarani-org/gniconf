@@ -2,11 +2,13 @@
 //
 
 #include "gniconf.h"
+#include <accel.h>
+#include <pugixml.hpp>
 
-using namespace std;
-
-int main()
+bool imu_config_t::serialize(std::string_view file) noexcept
 {
-	cout << "Hello CMake." << endl;
-	return 0;
+    pugi::xml_document doc;
+    doc.append_move(accel.node(doc));
+    doc.save(std::cout, "    ");
+    return false;
 }
