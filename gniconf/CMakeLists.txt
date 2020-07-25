@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_library (gniconf STATIC "src/gniconf.cpp" "include/gniconf.h" "include/accel.h" "test/gniconf_test.h" "src/accel.cpp" "src/gyro.cpp"  "src/mag.cpp" "include/recorder.h" "src/recorder.cpp" "include/syscfg.h" "src/syscfg.cpp")
+add_library (gniconf STATIC "src/gniconf.cpp" "include/gniconf.h" "include/accel.h" "test/gniconf_test.h" "src/accel.cpp" "src/gyro.cpp"  "src/mag.cpp" "include/recorder.h" "src/recorder.cpp" "include/syscfg.h" "src/syscfg.cpp" "include/gps.h" "src/gps.cpp")
 target_include_directories(gniconf PRIVATE "include" "../pugixml/src")
 set_target_properties(gniconf   PROPERTIES
                                 CXX_STANDARD 17
