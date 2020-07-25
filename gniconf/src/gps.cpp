@@ -1,9 +1,6 @@
 #include <gps.h>
-/*serial port
-            baud_rate
-            gps_config_file*/
-bool gps::gps_conf_t::parse(pugi::xml_document &doc) noexcept {
-  auto node = doc.child("gps").child("configuration");
+
+bool gps::gps_conf_t::parse(pugi::xml_node &node) noexcept {
 
   if (nullptr != node) {
 
@@ -16,17 +13,17 @@ bool gps::gps_conf_t::parse(pugi::xml_document &doc) noexcept {
 
   return !_error_flag;
 }
-pugi::xml_node gps::gps_conf_t::node(pugi::xml_document &doc) noexcept {
-  auto node = doc.append_child("gps").append_child("configuration");
+bool gps::gps_conf_t::node(pugi::xml_node &node) noexcept {
+
   if (nullptr != node) {
     node.append_attribute("serial_port") = serial_port.data();
-    node.append_attribute("baud_arte") = baud_rate;
+    node.append_attribute("baud_rate") = baud_rate;
     node.append_attribute("conf_file") = config_file.data();
 
   } else {
     _error_flag = true;
   }
 
-  return std::move(node);
+  return !_error_flag;
 }
 bool gps::gps_conf_t::has_error() noexcept { return false; }

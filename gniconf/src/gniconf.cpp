@@ -1,29 +1,76 @@
-﻿// gniconf.cpp : Defines the entry point for the application.
-//
-
-#include "gniconf.h"
-#include <accel.h>
+﻿
 #include <fstream>
-#include <pugixml.hpp>
+#include <gniconf.h>
 
-bool imu_config_t::serialize(std::string_view file) noexcept {
-  std::ofstream out(file.data(), std::ios::binary | std::ios::out);
+bool gniconfig_t::parse(std::string_view file) noexcept {
   pugi::xml_document doc;
-  doc.append_move(accel.node(doc));
-  doc.append_move(gyro.node(doc));
-  doc.append_move(mag.node(doc));
-  doc.save(out, "    ");
+  auto resp = doc.load_file(file.data());
+  if (resp.status == pugi::status_ok) {
+    sensors_cfg.i2c_bus = doc.child("sensors").attribute("bus").as_string();
+
+    sensors_cfg.imu.address =
+        doc.child("sensors").child("imu").attribute("address").as_uint();
+
+    if (!sensors_cfg.imu.accel_cfg.parse(doc.child("sensors")
+                                             .child("imu")
+                                             .child("accelerometer")
+                                             .child("configuration"))) {
+      return false;
+    }
+
+    if (!sensors_cfg.imu.gyro_cfg.parse(doc.child("sensors")
+                                            .child("imu")
+                                            .child("gyrometer")
+                                            .child("configuration"))) {
+      return false;
+    }
+
+    sensors_cfg.mag.address = doc.child("sensors")
+                                  .child("magnetometer")
+                                  .attribute("address")
+                                  .as_uint();
+
+    if (!sensors_cfg.mag.cfg.parse(doc.child("sensors")
+                                       .child("magnetometer")
+                                       .child("configuration"))) {
+      return false;
+    }
+
+    // sensors_cfg.baro.cfg.parse(
+    // doc.child("sensors").child("baro").child("configuration"));
+
+    if (!system_cfg.parse(doc.child("system").child("configuration"))) {
+      return false;
+    }
+    if (!gps_cfg.parse(doc.child("gps").child("configuration"))) {
+      return false;
+    }
+
+    return true;
+  }
   return false;
 }
-
-bool imu_config_t::parse(std::string_view file) noexcept {
-
+bool gniconfig_t::create(std::string_view file) noexcept {
   pugi::xml_document doc;
-  auto result = doc.load_file(file.data());
+  auto sens_node = doc.append_child("sensors");
+  auto sys_node = doc.append_child("system").append_child("configuration");
+  auto gps_node = doc.append_child("gps").append_child("configuration");
 
+  if (!sensors_cfg.node(sens_node)) {
+    return false;
+  }
+  if (!system_cfg.node(sys_node)) {
+    return false;
+  }
+  if (!gps_cfg.node(gps_node)) {
+    return false;
+  }
 
-  accel.parse(doc);
-  gyro.parse(doc);
-  mag.parse(doc);
+  std::ofstream out(file.data(), std::ios::binary | std::ios::out);
+  if (out.good()) {
+    doc.save(out, "    ");
+    return true;
+  }
+
   return false;
 }

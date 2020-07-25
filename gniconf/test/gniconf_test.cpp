@@ -1,8 +1,8 @@
 #include "gniconf_test.h"
 
 int main(void) {
-  imu_config_t imuc;
- // imuc.parse("d:\\temp\\teste.xml");
-  imuc.serialize("d:\\temp\\teste.xml");
+  gniconfig_t cfg;
+  cfg.parse("D:\\temp\\gniconf.xml");
+  cfg.create("D:\\temp\\gniconf.xml");
   return 0;
 }

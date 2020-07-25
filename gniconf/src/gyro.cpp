@@ -2,11 +2,9 @@
 
 #define field_at(X) _fields[static_cast<int>(findex::X)]
 
-bool gyr::data_t::parse(pugi::xml_document &doc) noexcept {
+bool gyr::data_t::parse(pugi::xml_node &node) noexcept {
   _error_flag = false;
   int index = 0;
-
-  auto node = doc.child("gyrometer").child("configuration");
 
   if (node != nullptr) {
     for (auto &attr : node.attributes()) {
@@ -24,20 +22,22 @@ bool gyr::data_t::parse(pugi::xml_document &doc) noexcept {
   return !_error_flag;
 }
 
-pugi::xml_node gyr::data_t::node(pugi::xml_document &doc) noexcept {
-  auto node = doc.append_child("gyrometer");
-  auto cfg = node.append_child("configuration");
+bool gyr::data_t::node(pugi::xml_node &node) noexcept {
+  if (node == nullptr) {
+    _error_flag = true;
+    return false;
+  }
 
   int index = 0;
   for (auto &field : fname) {
     if (index < static_cast<int>(findex::_fields_count)) {
-      cfg.append_attribute(field) = _fields[index++];
+      node.append_attribute(field) = _fields[index++];
     } else {
       _error_flag = true;
       break;
     }
   }
-  return std::move(node);
+  return true;
 }
 
 uint8_t gyr::data_t::field(findex index) noexcept {

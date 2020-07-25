@@ -11,23 +11,6 @@
 
 namespace acc {
 
-static const std::array<char *, 14> fname = {
-    "decimation",
-    "z_axis_output_enable",
-    "y_axis_output_enable",
-    "x_axis_output_enable",
-    "output_data_rate",
-    "full_scale",
-    "bandwidth_selection",
-    "antialising_filter_bandwidth_selection",
-    "high_resolution_mode",
-    "digital_filter_cutoff_frequency",
-    "filtered_data_selection",
-    "high_pass_filter_enable",
-    "bdu",
-    "ble",
-};
-
 enum class findex {
   decimation = 0,
   z_axis_output_enable,
@@ -44,6 +27,23 @@ enum class findex {
   bdu,
   ble,
   _fields_count
+};
+static const std::array<char *, static_cast<int>(findex::_fields_count)> fname =
+    {
+        "decimation",
+        "z_axis_output_enable",
+        "y_axis_output_enable",
+        "x_axis_output_enable",
+        "output_data_rate",
+        "full_scale",
+        "bandwidth_selection",
+        "antialising_filter_bandwidth_selection",
+        "high_resolution_mode",
+        "digital_filter_cutoff_frequency",
+        "filtered_data_selection",
+        "high_pass_filter_enable",
+        "bdu",
+        "ble",
 };
 
 struct data_t {
@@ -65,8 +65,8 @@ struct data_t {
   data_t();
   ~data_t() = default;
 
-  bool parse(pugi::xml_document &doc) noexcept;
-  pugi::xml_node node(pugi::xml_document &doc) noexcept;
+  bool parse(pugi::xml_node &node) noexcept;
+  bool node(pugi::xml_node &node) noexcept;
 
   uint8_t field(findex index) noexcept;
 

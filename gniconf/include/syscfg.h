@@ -4,8 +4,8 @@ namespace sys {
 struct sys_t {
   bool sync_time_with_gps = true;
 
-  bool parse(pugi::xml_document &doc) noexcept;
-  pugi::xml_node node(pugi::xml_document &doc) noexcept;
+  bool parse(pugi::xml_node &node) noexcept;
+  bool node(pugi::xml_node &node) noexcept;
   bool has_error() noexcept;
 
 private:

@@ -3,13 +3,9 @@
 
 #pragma once
 
-#include "accel.h"
-#include "gyro.h"
-#include "mag.h"
-#include <iostream>
-#include <pugixml.hpp>
-#include <string>
-#include <string_view>
+#include <gps.h>
+#include <sensors.h>
+#include <syscfg.h>
 
 /*TODO
     - recorder configuration
@@ -37,13 +33,13 @@
                 gyrometer
 */
 
-struct imu_config_t {
-  mg::data_t mag;
-  acc::data_t accel;
-  gyr::data_t gyro;
+struct gniconfig_t {
+  sens::sensors_cfg_t sensors_cfg;
+  sys::sys_t system_cfg;
+  gps::gps_conf_t gps_cfg;
 
   bool parse(std::string_view file) noexcept;
-  bool serialize(std::string_view file) noexcept;
+  bool create(std::string_view file) noexcept;
 };
 
 // TODO: Reference additional headers your program requires here.

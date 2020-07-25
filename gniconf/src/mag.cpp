@@ -17,11 +17,13 @@ mg::data_t::data_t()
   memset(_fields.data(), 0x00, _fields.size());
 }
 
-bool mg::data_t::parse(pugi::xml_document &doc) noexcept {
+bool mg::data_t::parse(pugi::xml_node &node) noexcept {
   _error_flag = false;
   int index = 0;
-
-  auto node = doc.child("magnetometer").child("configuration");
+  if (node == nullptr) {
+    _error_flag = true;
+    return false;
+  }
 
   if (node != nullptr) {
     for (auto &attr : node.attributes()) {
@@ -39,20 +41,23 @@ bool mg::data_t::parse(pugi::xml_document &doc) noexcept {
   return !_error_flag;
 }
 
-pugi::xml_node mg::data_t::node(pugi::xml_document &doc) noexcept {
-  auto node = doc.append_child("magnetometer");
-  auto cfg = node.append_child("configuration");
+bool mg::data_t::node(pugi::xml_node &node) noexcept {
+
+  if (node == nullptr) {
+    _error_flag = true;
+    return false;
+  }
 
   int index = 0;
   for (auto &field : fname) {
     if (index < static_cast<int>(findex::_fields_count)) {
-      cfg.append_attribute(field) = _fields[index++];
+      node.append_attribute(field) = _fields[index++];
     } else {
       _error_flag = true;
       break;
     }
   }
-  return std::move(node);
+  return !_error_flag;
 }
 
 uint8_t mg::data_t::field(findex index) noexcept {
