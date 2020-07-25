@@ -46,6 +46,10 @@ bool gniconfig_t::parse(std::string_view file) noexcept {
       return false;
     }
 
+    if (!rec_cfg.parse(doc.child("recording").child("configuration"))) {
+      return false;
+    }
+
     return true;
   }
   return false;
@@ -55,6 +59,7 @@ bool gniconfig_t::create(std::string_view file) noexcept {
   auto sens_node = doc.append_child("sensors");
   auto sys_node = doc.append_child("system").append_child("configuration");
   auto gps_node = doc.append_child("gps").append_child("configuration");
+  auto rec_node = doc.append_child("recording").append_child("configuration");
 
   if (!sensors_cfg.node(sens_node)) {
     return false;
@@ -63,6 +68,9 @@ bool gniconfig_t::create(std::string_view file) noexcept {
     return false;
   }
   if (!gps_cfg.node(gps_node)) {
+    return false;
+  }
+  if (!rec_cfg.node(rec_node)) {
     return false;
   }
 
