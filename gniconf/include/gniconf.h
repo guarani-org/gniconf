@@ -13,9 +13,9 @@
 
 
 struct imu_config_t {
-    mag_config_t mag;
-    acc::accel_config_t accel;
-    gyro_config_t gyro;
+    mg::data_t mag;
+    acc::data_t accel;
+    gyr::data_t gyro;
 
     bool parse(std::string_view file)noexcept;
     bool serialize(std::string_view file)noexcept;
