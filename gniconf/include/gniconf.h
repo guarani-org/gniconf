@@ -7,6 +7,7 @@
 #include <sensors.h>
 #include <syscfg.h>
 #include <recorder.h>
+#include <installation.h>
 
 /*TODO
     - recorder configuration
@@ -39,6 +40,8 @@ struct gniconfig_t {
   sys::sys_t system_cfg;
   gps::gps_conf_t gps_cfg;
   rec::rec_t rec_cfg;
+  inst::install_t inst_cfg;
+ 
 
   bool parse(std::string_view file) noexcept;
   bool create(std::string_view file) noexcept;
